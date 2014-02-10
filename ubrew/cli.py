@@ -1,7 +1,6 @@
 """
 """
 
-__VERSION_STRING = "0.0.1"
 __DESCRIPTION =  'ubrew easy installation and management of apps in user space'
 
 import argparse
@@ -15,6 +14,8 @@ import pkgutil
 
 from ubrew.util import retrieve, sort_versions
 from ubrew import log
+
+from ubrew.version import __VERSION_STRING
 
 
 def setup():

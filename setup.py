@@ -3,7 +3,7 @@ setup.py
 """
 from setuptools import setup, find_packages 
 
-from ubrew.cli import __VERSION_STRING
+from ubrew.version import __VERSION_STRING
 
 setup (
     name='ubrew',

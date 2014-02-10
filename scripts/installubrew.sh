@@ -7,7 +7,7 @@
 # Python-3.3.1 to run itself.
 # 
 
-UBREW_GIT_SOURCE="git+https://github.com/rlgomes/ubrew#egg=ubrew"
+UBREW_GIT_SOURCE="git://github.com/rlgomes/ubrew#egg=ubrew"
 PYTHON_INSTALL="$HOME/.ubrew/apps/python/3.3.1"
 TEMP="/tmp"
 DOWNLOAD_FILENAME=""

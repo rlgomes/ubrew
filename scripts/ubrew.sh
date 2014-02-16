@@ -28,7 +28,6 @@ __ubrew_unuse() {
             NEWVALUE=`echo $CVALUE | sed 's/"$VALUE"://g'`
             export $VARIABLE=$NEWVALUE
         done
-        echo "Not Using $2 $3"
     else
         return $RC
     fi

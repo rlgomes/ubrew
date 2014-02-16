@@ -8,8 +8,8 @@ __ubrew_run() {
     $UBREW_BASEDIR/python -m ubrew.cli $@)
 }
 
-__ubrew_deactivate() {
-    __ubrew_run $@ > /tmp/$$-deactivate.out
+__ubrew_unuse() {
+    __ubrew_run $@ > /tmp/$$-unuse.out
     RC=$?
     if [ $RC = 0 ]
     then
@@ -20,7 +20,7 @@ __ubrew_deactivate() {
             unset UBREW_$2
         fi
 
-        for P in `cat /tmp/$$-deactivate.out`; do
+        for P in `cat /tmp/$$-unuse.out`; do
             VARIABLE=`echo $P | awk -F= '{print $1}'`
             VALUE=`echo $P | awk -F= '{print $2}'`
 
@@ -28,14 +28,14 @@ __ubrew_deactivate() {
             NEWVALUE=`echo $CVALUE | sed 's/"$VALUE"://g'`
             export $VARIABLE=$NEWVALUE
         done
-        echo "deactivated $2 $3"
+        echo "Not Using $2 $3"
     else
         return $RC
     fi
 }
 
-__ubrew_activate() {
-    __ubrew_run $@ > /tmp/$$-activate.out
+__ubrew_use() {
+    __ubrew_run $@ > /tmp/$$-use.out
     RC=$?
     if [ $RC = 0 ]
     then
@@ -43,13 +43,13 @@ __ubrew_activate() {
         
         if [ "$VERSION" != "" ]
         then
-            __ubrew_deactivate deactivate $2 $VERSION
+            __ubrew_unuse use $2 $VERSION
         fi
        
-        # store the previous app version activated 
+        # store the previous app version activated
         export UBREW_$2=$3
 
-        for P in `cat /tmp/$$-activate.out`
+        for P in `cat /tmp/$$-use.out`
         do
             VARIABLE=`echo $P | awk -F= '{print $1}'`
             NEWVALUE=`echo $P | awk -F= '{print $2}'`
@@ -57,7 +57,7 @@ __ubrew_activate() {
             eval VALUE=\$$VARIABLE
             export $VARIABLE=$NEWVALUE:$VALUE
         done
-        echo "activated $2 $3"
+        echo "Using $2 $3"
     else
         return $RC
     fi
@@ -67,8 +67,7 @@ ubrew() {
     # this is the command that everyone runs since this function will be 
     # exported so its always visible
     case $1 in
-        activate) __ubrew_activate $@ ;;
-        deactivate) __ubrew_deactivate $@ ;;
+        use) __ubrew_use $@ ;;
         *) __ubrew_run "$@" ;;
     esac        
 }

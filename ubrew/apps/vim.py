@@ -28,7 +28,7 @@ class UBrewApp(UBrewAppMakeBuild):
     def arguments(self):
         return [ ]
 
-    def activate(self, install_directory):
+    def use(self, install_directory):
         return { 
                 'PATH' : '%s/bin' % install_directory
                }

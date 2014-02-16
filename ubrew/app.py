@@ -46,7 +46,7 @@ class UBrewApp(object):
         raise Exception('implement me')
 
 
-    def activate(self, install_directory):
+    def use(self, install_directory):
         """
         return the name of the environment variables you'd like to prepend 
         entries to. usually you just want to prepend to the existing PATH but 
@@ -164,7 +164,7 @@ class UBrewAppSetuptools(UBrewApp):
 
         raise Exception('unable to determine which python version is in use') 
 
-    def activate(self, install_directory):
+    def use(self, install_directory):
         """
         return the name of the environment variables you'd like to prepend 
         entries to. usually you just want to prepend to the existing PATH but 

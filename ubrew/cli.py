@@ -103,7 +103,7 @@ def active(app, app_name, install_directory):
         versions = os.listdir(app_directory)
         if len(versions) != 0:
             for version in versions:
-                variables = app.activate(version)
+                variables = app.use(version)
                 
                 active = True
                 for var in variables.keys():
@@ -235,11 +235,8 @@ def main():
     installed_parser = subparsers.add_parser('installed', help='installed help')
     add_app_parsers(installed_parser, arguments=[])
 
-    activate_parser = subparsers.add_parser('activate', help='activate help')
-    add_app_parsers(activate_parser)
-
-    deactivate_parser = subparsers.add_parser('deactivate', help='deactivate help')
-    add_app_parsers(deactivate_parser)
+    use_parser = subparsers.add_parser('use', help='use help')
+    add_app_parsers(use_parser)
 
     active_parser = subparsers.add_parser('active', help='active help')
     add_app_parsers(active_parser, arguments=[])
@@ -281,22 +278,11 @@ def main():
     elif args.action == 'active':
         return active(app, app_name, install_directory)
 
-    elif args.action == 'activate':
+    elif args.action == 'use':
         app_directory = '%s/%s' % (install_directory, app_name)
         final_directory = '%s/%s' % (app_directory, app_version)
         if os.path.exists(final_directory):
-            variables = app.activate(final_directory)
-            for key in variables.keys():
-                print('%s=%s' % (key, variables[key]))
-        else:
-            sys.stderr.write('%s-%s not installed.' % (app_name, app_version))
-            sys.exit(1)
-
-    elif args.action == 'deactivate':
-        app_directory = '%s/%s' % (install_directory, app_name)
-        final_directory = '%s/%s' % (app_directory, app_version)
-        if os.path.exists(final_directory):
-            variables = app.activate(final_directory)
+            variables = app.use(final_directory)
             for key in variables.keys():
                 print('%s=%s' % (key, variables[key]))
         else:

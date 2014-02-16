@@ -45,7 +45,7 @@ class UBrewApp(UBrewAppPreBuiltBinary):
         return base_directory 
 
 
-    def activate(self, install_directory):
+    def use(self, install_directory):
         return {
                 'PATH' : install_directory
                }

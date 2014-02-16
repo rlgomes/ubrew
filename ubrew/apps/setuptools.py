@@ -18,7 +18,7 @@ class UBrewApp(UBrewAppSetuptools):
                 '--with-pydebug',
                ]
 
-    def activate(self, install_directory):
+    def use(self, install_directory):
         return {
                 'PATH' : '%s/bin' %install_directory
                }

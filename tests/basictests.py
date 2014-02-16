@@ -133,30 +133,30 @@ class BasicTests(ParameterizedTestCase):
 
 
     @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
-    def test_install_activate_v1_0(self, app, shell):
+    def test_install_use_v1_0(self, app, shell):
         cli = CmdLine(shell=shell)
 
         exit_code, _, stdout, stderr = cli.run("ubrew install %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
 
-        exit_code, env, stdout, stderr = cli.run("ubrew activate %s 1.0" % app)
+        exit_code, env, stdout, stderr = cli.run("ubrew use %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
         self.assertTrue(('%s/1.0' % app) in env['PATH'],
                         msg='PATH contains %s' % env['PATH'])
 
 
     @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
-    def test_install_activate_v1_0_verify_with_active(self, app, shell):
+    def test_install_use_v1_0_verify_with_active(self, app, shell):
         cli = CmdLine(shell=shell)
 
         exit_code, _, stdout, stderr = cli.run("ubrew install %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
 
-        exit_code, env, stdout, stderr = cli.run("ubrew activate %s 1.0" % app)
+        exit_code, env, stdout, stderr = cli.run("ubrew use %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
 
         exit_code, env, stdout, stderr = cli.run("""
-ubrew activate %s 1.0
+ubrew use %s 1.0
 ubrew active %s
 """ % (app, app))
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
@@ -184,7 +184,7 @@ ubrew active %s
 
 
     @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
-    def test_install_uninstall_verify_activate_fails(self, app, shell):
+    def test_install_uninstall_verify_use_fails(self, app, shell):
         cli = CmdLine(shell=shell)
 
         exit_code, _, stdout, stderr = cli.run("ubrew install %s 1.0" % app)
@@ -193,7 +193,7 @@ ubrew active %s
         exit_code, _, stdout, stderr = cli.run("ubrew uninstall %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
 
-        exit_code, _, stdout, stderr = cli.run("ubrew activate %s 1.0" % app)
+        exit_code, _, stdout, stderr = cli.run("ubrew use %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 1)
 
 
@@ -214,7 +214,7 @@ ubrew active %s
 
 
     @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
-    def test_activate_v2_0_after_v1_0_deactivates_v1_0(self, app, shell):
+    def test_use_v2_0_after_v1_0_deactivates_v1_0(self, app, shell):
         cli = CmdLine(shell=shell)
 
         exit_code, _, stdout, stderr = cli.run("ubrew install %s 1.0" % app)
@@ -223,40 +223,21 @@ ubrew active %s
         exit_code, _, stdout, stderr = cli.run("ubrew install %s 2.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
 
-        exit_code, env, stdout, stderr = cli.run("ubrew activate %s 1.0" % app)
+        exit_code, env, stdout, stderr = cli.run("ubrew use %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
         self.assertTrue(('%s/1.0' % app) in env['PATH'])
 
-        exit_code, env, stdout, stderr = cli.run("ubrew activate %s 2.0" % app)
+        exit_code, env, stdout, stderr = cli.run("ubrew use %s 2.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
         self.assertTrue(('%s/2.0' % app) in env['PATH'])
         self.assertTrue(('%s/1.0' % app) not in env['PATH'])
 
 
     @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
-    def test_activate_version_that_wasnt_installed(self, app, shell):
+    def test_use_version_that_wasnt_installed(self, app, shell):
         cli = CmdLine(shell=shell)
 
-        exit_code, _, stdout, stderr = cli.run("ubrew activate %s 1.0" % app)
+        exit_code, _, stdout, stderr = cli.run("ubrew use %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 1)
-
-
-    @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
-    def test_deactivate_version_that_wasnt_installed(self, app, shell):
-        cli = CmdLine(shell=shell)
-
-        exit_code, _, stdout, stderr = cli.run("ubrew deactivate %s 1.0" % app)
-        assertResult(exit_code, stdout, stderr, expected_exit_code = 1)
-
-
-    @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
-    def test_deactivate_version_that_wasnt_active(self, app, shell):
-        cli = CmdLine(shell=shell)
-
-        exit_code, _, stdout, stderr = cli.run("ubrew install %s 1.0" % app)
-        assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
-
-        exit_code, _, stdout, stderr = cli.run("ubrew deactivate %s 1.0" % app)
-        assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
 
 

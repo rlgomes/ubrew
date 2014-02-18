@@ -11,11 +11,12 @@ import re
 import os
 
 from bs4 import BeautifulSoup
-from ubrew.app import UBrewAppPreBuiltBinary
+from ubrew.app import PreBuiltBinaryRecipe
 
 
-class UBrewApp(UBrewAppPreBuiltBinary):
-
+class FirefoxRecipe(PreBuiltBinaryRecipe):
+    
+    name = 'firefox'
 
     def _get_platform_string(self, ):
         system_string = platform.system()

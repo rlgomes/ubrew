@@ -9,13 +9,13 @@ import tempfile
 from ubrew import log
 
 
-class UBrewApp(object):
-
+class AppRecipe(object):
 
     def arguments(self):
         """
         return a list of keyword arguments that the command line tool can expose
-        to the end user and which willb e passed as key word arguments to the UBrewApps install method. These arguments in the form --with-special get 
+        to the end user and which will be passed as key word arguments to the 
+        install method. These arguments in the form --with-special get 
         translated into keyword arguments and passed to the install function, 
         like the following examples:
 
@@ -53,9 +53,7 @@ class UBrewApp(object):
         in the case of things like python you'd want to prepend to the 
         PYTHONTPATH as well.
         """
-        return {
-                'PATH': install_directory
-               }
+        return { 'PATH': install_directory }
 
 
     def install(self, download_directory, install_directory):
@@ -71,11 +69,14 @@ class UBrewApp(object):
     def info(self, stepname, message):
         log.info('%s: %s' % (stepname, message))
 
+
     def warn(self, stepname, message):
         log.warn('%s: %s' % (stepname, message))
 
+
     def error(self, stepname, message):
         log.error(' %s: %s' % (stepname, message))
+
 
     def run(self, stepname, args):
         """
@@ -92,7 +93,8 @@ class UBrewApp(object):
             self.error(stepname, 'check %s for details.' % logfile)
             raise Exception('Failed to run [%s]' % ' '.join(args))
 
-class UBrewAppPreBuiltBinary(UBrewApp):
+
+class PreBuiltBinaryRecipe(AppRecipe):
     """
     pre built binary package only needs to be moved to its new location be 
     installed
@@ -103,7 +105,7 @@ class UBrewAppPreBuiltBinary(UBrewApp):
         shutil.move(download_directory, install_directory)
 
 
-class UBrewAppMakeBuild(UBrewApp):
+class AutoconfRecipe(AppRecipe):
     """
     The simplest autoconf project requires a ./configure with the --prefix 
     assigned to the installation directory and a simple 'make' followed by a 
@@ -114,13 +116,12 @@ class UBrewAppMakeBuild(UBrewApp):
         # lets configure and install to the desired location
         os.chdir(download_directory)
 
-        self.run('test', ['python', '--version'])
-        self.run('config', ['./configure', '--prefix=%s' % install_directory])
+        self.run('configure', ['./configure', '--prefix=%s' % install_directory])
         self.run('build', ['make'])
         self.run('install', ['make','install'])
 
 
-class UBrewAppGitSource(UBrewApp):
+class GitSourceRecipe(AppRecipe):
     """
     """
 
@@ -128,6 +129,9 @@ class UBrewAppGitSource(UBrewApp):
         self.source = source
 
     def available(self):
+        """
+        all available versions are the exact tag names that the git repo has.
+        """
         tags = {}
 
         process = subprocess.Popen(['git', 'ls-remote', '--tags', self.source],
@@ -149,11 +153,16 @@ class UBrewAppGitSource(UBrewApp):
         return tags
 
 
-class UBrewAppSetuptools(UBrewApp):
+class SetuptoolsRecipe(AppRecipe):
     """
+    recipe for installing and enabling a python setuptools package.
     """
 
     def _which_python(self):
+        """
+        based on the PYTHONPATH variable we can figure out the exact python 
+        version that is installed.
+        """
         pythonpath = os.environ['PYTHONPATH']
         splits = pythonpath.split(':')
         pythonpath = os.path.abspath(splits[-1])
@@ -173,7 +182,8 @@ class UBrewAppSetuptools(UBrewApp):
         """
         return {
                 'PATH': '%s/bin' % install_directory,
-                'PYTHONPATH': '%s/lib/%s/site-packages' % (install_directory, self._which_python()),
+                'PYTHONPATH': '%s/lib/%s/site-packages' %
+                              (install_directory, self._which_python()),
                }
 
 

@@ -10,7 +10,7 @@ import shutil
 
 from bs4 import BeautifulSoup
 
-from ubrew.app import UBrewAppMakeBuild
+from ubrew.app import AutoconfRecipe
 
 def _get_platform():
     # aix ansi bsd generic linux macosx mingw posix solaris
@@ -24,7 +24,9 @@ def _get_platform():
         raise Exception('unsupported os platform %s' % system_string)
 
 
-class UBrewApp(UBrewAppMakeBuild):
+class LuaRecipe(AutoconfRecipe):
+
+    name = 'lua'
 
     __FTP_LOCATION='http://www.lua.org/ftp/'
 
@@ -40,7 +42,7 @@ class UBrewApp(UBrewAppMakeBuild):
 
 
     def available(self):
-        htmldata = urllib.request.urlopen(UBrewApp.__FTP_LOCATION).read()
+        htmldata = urllib.request.urlopen(LuaRecipe.__FTP_LOCATION).read()
         soup = BeautifulSoup(htmldata)
 
         def add_to(major, version):
@@ -59,7 +61,7 @@ class UBrewApp(UBrewAppMakeBuild):
                 match = re.match('lua\-([0-9\.]+)\.tar\.gz$', href)
                 if match:
                     version = match.group(1)
-                    url = '%s/%s' % (UBrewApp.__FTP_LOCATION, href) 
+                    url = '%s/%s' % (LuaRecipe.__FTP_LOCATION, href) 
                     versions[version] = { 'url': url }
 
         return versions

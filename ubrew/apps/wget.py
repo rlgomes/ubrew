@@ -7,12 +7,14 @@ import os
 
 from bs4 import BeautifulSoup
 
-from ubrew.app import UBrewAppMakeBuild
+from ubrew.app import AutoconfRecipe
 
-class UBrewApp(UBrewAppMakeBuild):
+
+class WGetRecipe(AutoconfRecipe):
 
     __FTP_LOCATION='http://ftp.gnu.org/gnu/wget/'
 
+    name = 'wget'
 
     def arguments(self):
         return [ ]
@@ -23,7 +25,7 @@ class UBrewApp(UBrewAppMakeBuild):
                }
 
     def available(self):
-        htmldata = urllib.request.urlopen(UBrewApp.__FTP_LOCATION).read()
+        htmldata = urllib.request.urlopen(WGetRecipe.__FTP_LOCATION).read()
         soup = BeautifulSoup(htmldata)
 
         def add_to(major, version):
@@ -41,7 +43,7 @@ class UBrewApp(UBrewAppMakeBuild):
             match = re.match('wget\-([0-9\.]+)\.tar\.gz$', href)
             if match:
                 version = match.group(1)
-                url = '%s/%s' % (UBrewApp.__FTP_LOCATION, href) 
+                url = '%s/%s' % (WGetRecipe.__FTP_LOCATION, href) 
                 versions[version] = { 'url': url }
 
         return versions

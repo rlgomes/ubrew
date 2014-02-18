@@ -82,6 +82,8 @@ def assertResult(exit_code, stdout, stderr, expected_exit_code=None):
             raise AssertionError("unexpected return code %s, expecting %s" % \
                                  (exit_code, expected_exit_code))
 
+_SHELLS = [ ('bash',), ('zsh',), ('sh',), ('dash',) ]
+
 
 _PARAMS = [
            ('makeapp','bash'),
@@ -106,7 +108,7 @@ class BasicTests(ParameterizedTestCase):
 
         exit_code, _, stdout, stderr = cli.run("ubrew available %s" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
-    
+        
         for version in range(1, 5):
             self.assertTrue(('%s.0' % version) in stdout)
 
@@ -171,8 +173,8 @@ ubrew active %s
         assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
 
         exit_code, env, stdout, stderr = cli.run("ubrew active %s" % app)
-        assertResult(exit_code, stdout, stderr, expected_exit_code = 1)
-        self.assertTrue(('%s no active version' % app) in stdout, '%s' % stdout)
+        assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
+        self.assertTrue(('%s-1.0 is active' % app) not in stdout, '%s' % stdout)
 
  
     @ParameterizedTestCase.parameterize(("app", "shell"), _PARAMS)
@@ -239,5 +241,26 @@ ubrew active %s
 
         exit_code, _, stdout, stderr = cli.run("ubrew use %s 1.0" % app)
         assertResult(exit_code, stdout, stderr, expected_exit_code = 1)
+
+
+    @ParameterizedTestCase.parameterize(("shell",), _SHELLS)
+    def test_multiple_active_applications(self, shell):
+        cli = CmdLine(shell=shell)
+
+        exit_code, _, stdout, stderr = cli.run("""
+ubrew install makeapp 1.0
+ubrew install prebuiltapp 1.0
+""")
+        assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
+
+        exit_code, env, stdout, stderr = cli.run("""
+ubrew use makeapp 1.0
+ubrew use prebuiltapp 1.0
+ubrew active
+""")
+        assertResult(exit_code, stdout, stderr, expected_exit_code = 0)
+        self.assertTrue('makeapp-1.0 is active' in stdout, '%s' % stdout)
+        self.assertTrue('prebuiltapp-1.0 is active' in stdout, '%s' % stdout)
+
 
 

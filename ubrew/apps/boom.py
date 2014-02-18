@@ -1,13 +1,16 @@
 """
 Boom! is a simple command line tool to send some load to a web app.
+
 https://github.com/tarekziade/boom
 """
 
-from ubrew.app import UBrewAppGitSource, UBrewAppSetuptools
+from ubrew.app import GitSourceRecipe, SetuptoolsRecipe
 
-class UBrewApp(UBrewAppGitSource, UBrewAppSetuptools):
+class BoomRecipe(GitSourceRecipe, SetuptoolsRecipe):
+
+    name = 'boom'
 
     def __init__(self):
-        UBrewAppGitSource.__init__(self, 'git://github.com/tarekziade/boom')
-        UBrewAppSetuptools.__init__(self)
+        GitSourceRecipe.__init__(self, 'git://github.com/tarekziade/boom')
+        SetuptoolsRecipe.__init__(self)
 

@@ -7,6 +7,12 @@ import shutil
 import tarfile
 import os
 
+import inspect
+import pkgutil
+import importlib
+
+from ubrew.app import AppRecipe
+
 def retrieve(fromurl, cache_directory, outdirectory):
     url = urlparse(fromurl)
 
@@ -173,4 +179,41 @@ class LooseVersion (Version):
 
 def sort_versions(versions):
     return sorted(versions, key = LooseVersion) 
+
+if os.environ.get('UBREW_PACKAGES', None):
+    __APP_PKGS = ['ubrew.apps'] + os.environ.get('UBREW_PACKAGES').split(',')
+else:
+    __APP_PKGS = ['ubrew.apps']
+
+def load_app_recipes():
+    recipes = []
+
+    for package in __APP_PKGS:
+        package_module = importlib.import_module(package)
+        package_path = os.path.dirname(package_module.__file__)
+
+        for (_, module, _) in pkgutil.iter_modules([package_path]):
+            try:
+                if module == 'app':
+                    continue
+
+                ubrew_module = importlib.import_module('%s.%s' % (package, module)) 
+
+                for member in dir(ubrew_module):
+                    member_value = getattr(ubrew_module, member)
+
+                    if not hasattr(member_value, 'name'):
+                        continue
+
+                    if inspect.isclass(member_value):
+                        app = member_value()
+                        if issubclass(app.__class__, AppRecipe):
+                            app_name = getattr(app, 'name')
+                            recipes.append((app_name, app))
+            except:
+                import traceback
+                traceback.print_exc()
+                pass
+
+    return sorted(recipes)
 

@@ -1,9 +1,11 @@
 
-from ubrew.app import UBrewAppPreBuiltBinary
+from ubrew.app import PreBuiltBinaryRecipe
 import os
 
 
-class UBrewApp(UBrewAppPreBuiltBinary):
+class PreBuiltAppRecipe(PreBuiltBinaryRecipe):
+    
+    name = 'prebuiltapp'
 
     def activate(self, install_directory):
         return { 'PATH': '%s/bin' % install_directory }

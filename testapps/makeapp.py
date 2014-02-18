@@ -1,9 +1,11 @@
 
-from ubrew.app import UBrewAppMakeBuild
+from ubrew.app import AutoconfRecipe
 
 import os
 
-class UBrewApp(UBrewAppMakeBuild):
+class MakeAppRecipe(AutoconfRecipe):
+
+    name = 'makeapp'
 
     def activate(self, install_directory):
         return { 'PATH': '%s/bin' % install_directory }

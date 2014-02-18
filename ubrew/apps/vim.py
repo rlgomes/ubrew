@@ -8,12 +8,14 @@ import os
 
 from bs4 import BeautifulSoup
 
-from ubrew.app import UBrewAppMakeBuild
+from ubrew.app import AutoconfRecipe
 
-class UBrewApp(UBrewAppMakeBuild):
+
+class VimRecipe(AutoconfRecipe):
 
     __FTP_LOCATION='http://ftp.vim.org/pub/vim/'
 
+    name = 'vim'
 
     def _get_platform(self):
         system_string = platform.system()
@@ -35,7 +37,7 @@ class UBrewApp(UBrewAppMakeBuild):
 
     def available(self):
         platform = self._get_platform()
-        baseurl = '%s/%s' % (UBrewApp.__FTP_LOCATION, platform)
+        baseurl = '%s/%s' % (VimRecipe.__FTP_LOCATION, platform)
         htmldata = urllib.request.urlopen(baseurl).read()
         soup = BeautifulSoup(htmldata)
 

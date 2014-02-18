@@ -6,12 +6,14 @@ import re
 
 from bs4 import BeautifulSoup
 
-from ubrew.app import UBrewAppSetuptools
+from ubrew.app import SetuptoolsRecipe
 
-class UBrewApp(UBrewAppSetuptools):
+
+class SetuptoolsRecipe(SetuptoolsRecipe):
 
     __FTP_LOCATION='https://pypi.python.org/packages/source/s/setuptools/'
-
+    
+    name = 'setuptools'
 
     def arguments(self):
         return [
@@ -24,7 +26,7 @@ class UBrewApp(UBrewAppSetuptools):
                }
 
     def available(self):
-        htmldata = urllib.request.urlopen(UBrewApp.__FTP_LOCATION).read()
+        htmldata = urllib.request.urlopen(SetuptoolsRecipe.__FTP_LOCATION).read()
         soup = BeautifulSoup(htmldata)
 
         def add_to(major, version):
@@ -43,7 +45,7 @@ class UBrewApp(UBrewAppSetuptools):
                 
                 if match:
                     version = match.group(1)
-                    url = '%s/%s' % (UBrewApp.__FTP_LOCATION, name)
+                    url = '%s/%s' % (SetuptoolsRecipe.__FTP_LOCATION, name)
                     versions[version] = { 'url': url }
             except:
                 pass

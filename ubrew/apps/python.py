@@ -7,12 +7,14 @@ import re
 
 from bs4 import BeautifulSoup
 
-from ubrew.app import UBrewAppMakeBuild
+from ubrew.app import AutoconfRecipe
 
-class UBrewApp(UBrewAppMakeBuild):
+
+class PythonRecipe(AutoconfRecipe):
 
     __FTP_LOCATION='http://www.python.org/ftp/python/'
 
+    name = 'python'
 
     def _get_platform_extension(self):
         system_string = platform.system()
@@ -35,7 +37,7 @@ class UBrewApp(UBrewAppMakeBuild):
                }
 
     def available(self):
-        htmldata = urllib.request.urlopen(UBrewApp.__FTP_LOCATION).read()
+        htmldata = urllib.request.urlopen(PythonRecipe.__FTP_LOCATION).read()
         soup = BeautifulSoup(htmldata)
 
         def add_to(major, version):
@@ -55,7 +57,8 @@ class UBrewApp(UBrewAppMakeBuild):
                     
                     if re.match('[0-9]+.*', version):
                         ext = self._get_platform_extension()
-                        url = '%s/%s/Python-%s%s' % (UBrewApp.__FTP_LOCATION, version, version, ext)
+                        url = '%s/%s/Python-%s%s' % \
+                              (PythonRecipe.__FTP_LOCATION, version, version, ext)
 
                         versions[version] = { 'url': url }
                 except:

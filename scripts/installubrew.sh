@@ -45,7 +45,7 @@ then
     then
 
         run "Downloading Python Source" \
-            "curl -# $DOWNLOAD -o $TEMP/$DOWNLOAD_FILENAME" \
+            "curl -# -L $DOWNLOAD -o $TEMP/$DOWNLOAD_FILENAME" \
             "Failed to download Python Source"
 
         cp $TEMP/$DOWNLOAD_FILENAME $OUTPUT_DIRECTORY/$DOWNLOAD_FILENAME

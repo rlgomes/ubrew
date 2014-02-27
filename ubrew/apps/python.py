@@ -3,12 +3,13 @@
 
 import platform
 import urllib.request
+import os
 import re
 
 from bs4 import BeautifulSoup
 
 from ubrew.app import AutoconfRecipe
-
+from ubrew.util import retrieve
 
 class PythonRecipe(AutoconfRecipe):
 
@@ -29,6 +30,7 @@ class PythonRecipe(AutoconfRecipe):
     def arguments(self):
         return [
                 '--with-pydebug',
+                '--with-setuptools',
                ]
 
     def use(self, install_directory):
@@ -65,4 +67,19 @@ class PythonRecipe(AutoconfRecipe):
                     pass
 
         return versions
+    
+    def install(self, download_directory, install_directory, arguments):
+        AutoconfRecipe.install(self, download_directory, install_directory, arguments)
+        
+        # shall we install setuptools ? 
+        if arguments.with_setuptools:
+            fromurl = "https://pypi.python.org/packages/source/s/setuptools/setuptools-2.1.tar.gz"
+            output_directory = '%s/setuptools' % download_directory
+            retrieve(fromurl, download_directory, output_directory)
+
+            os.chdir(output_directory)
+            self.run('install', ['%s/bin/python' % install_directory,
+                                 'setup.py',
+                                 'install'])
+
 

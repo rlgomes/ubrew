@@ -6,6 +6,7 @@ various tools, libraries and development tools across all Nix systems. This is
 definitely not production ready as I will be making a lot of changes to make
 adding new tools, libraries, etc easy and without having to write any code.
 
+
 installation
 ============
 
@@ -15,19 +16,22 @@ Mac OS X: **Working on it**
 
 Linux:
 
-    > curl -# https://raw.github.com/rlgomes/ubrew/master/scripts/installubrew.sh | bash
+   > curl -# https://raw.github.com/rlgomes/ubrew/master/scripts/installubrew.sh | bash
 
 This will install ubrew under ~/.ubrew and also make sure to setup python 3.3.1
 which is currently the Python runtime used by default when running ubrew.
+
 
 requirements
 ============
 
 Linux:
 
- * Debian:  yes | sudo apt-get install curl git-core 
+ * Debian:  sudo apt-get install curl git-core 
 
- * RedHat:  yes | sudo yum install curl git-core 
+ * RedHat:  sudo yum install curl git-core 
+
+ * Gentoo:  
 
 Also make sure you have the latest gcc installed on either system (I'll provide
 more information on how to get those done for Debian & Redhat systems later).
@@ -60,8 +64,8 @@ Check which versions are currently available:
          * 3.4.0
  
 Currently there are a few other packages available but not given this is still
-an early version of ubrew not everythin installs right out of the box. Feel free
-to open any issues found as I'm still trying to figure out a better way to 
+an early version of ubrew not everything installs right out of the box. Feel 
+free to open any issues found as I'm still trying to figure out a better way to 
 detect which versions would install depending on your setup and possibly having
 more information on why certain version can't be installed such as details about
 missing system level packges.

@@ -34,7 +34,13 @@ def setup():
     return install_directory, cache_directory
 
 
-def __install(app, app_name, app_version, install_directory, cache_directory, download_url):
+def __install(app,
+              app_name,
+              app_version,
+              install_directory,
+              cache_directory,
+              download_url,
+              arguments):
     log.info('installing %s-%s' % (app_name, app_version))
     app_directory = '%s/%s' % (install_directory, app_name)
     if not os.path.exists(app_directory):
@@ -53,14 +59,14 @@ def __install(app, app_name, app_version, install_directory, cache_directory, do
     retrieve(download_url, cache_directory, out_directory)
 
     final_directory = '%s/%s' % (app_directory, app_version)
-    app.install(out_directory, final_directory)
+    app.install(out_directory, final_directory, arguments)
 
 
 def clean(cache_directory):
     shutil.rmtree(cache_directory)
     os.mkdir(cache_directory)
 
-def install(app, app_name, app_version, install_directory, cache_directory):
+def install(app, app_name, app_version, install_directory, cache_directory, arguments):
     available = app.available()
     versions = available.keys()
     versions = sort_versions(versions)
@@ -71,7 +77,7 @@ def install(app, app_name, app_version, install_directory, cache_directory):
         for version in versions:
             download_url = available[version]['url']
             try:
-                __install(app, app_name, version, install_directory, cache_directory, download_url)
+                __install(app, app_name, version, install_directory, cache_directory, download_url, arguments)
             except Exception as e:
                 failed = True
                 log.error(str(e))
@@ -82,7 +88,7 @@ def install(app, app_name, app_version, install_directory, cache_directory):
 
     elif app_version in versions:
         download_url = available[app_version]['url']
-        __install(app, app_name, app_version, install_directory, cache_directory, download_url)
+        __install(app, app_name, app_version, install_directory, cache_directory, download_url, arguments)
     else:
         print('version %s is unavailable.' % app_version)
         sys.exit(1)
@@ -134,10 +140,11 @@ def available(apps, unstable_releases=False):
             grouped_versions = {}
             print('\n%s:' % app_name)
             for version in versions:
+
                 if unstable_releases:
-                    match = re.match('([a-z0-9]+\.[a-z0-9]+).*', version)
+                    match = re.match('([a-z0-9]+).*', version)
                 else:
-                    match = re.match('([a-z0-9]+\.[a-z0-9]+)\.?[a-z0-9]*$', version)
+                    match = re.match('([v0-9]+\.?[0-9]*)\.?[0-9]*$', version)
 
                 if match:
                     major = match.group(1)
@@ -192,7 +199,7 @@ def add_app_parsers(base_parser,
 
         if with_arguments:
             for argument in app.arguments():
-                app_parser.add_argument(argument)
+                app_parser.add_argument(argument, action='store_true')
 
 
 def main():
@@ -271,7 +278,7 @@ def main():
         apps = [(app_name, app)]
 
     if args.action == 'install':
-        return install(app, app_name, app_version, install_directory, cache_directory)
+        return install(app, app_name, app_version, install_directory, cache_directory, args)
 
     elif args.action == 'uninstall':
         return uninstall(app, app_name, app_version, install_directory)
@@ -291,7 +298,12 @@ def main():
         return active(apps, install_directory)
 
     elif args.action == 'available':
-        return available(apps, unstable_releases=False) #args.unstable_releases)
+        try:
+            unstable = args.unstable_releases
+        except:
+            unstable = False
+
+        return available(apps, unstable_releases=unstable)
 
     elif args.action == 'installed':
         return installed(apps, install_directory)

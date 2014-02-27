@@ -56,7 +56,7 @@ class AppRecipe(object):
         return { 'PATH': install_directory }
 
 
-    def install(self, download_directory, install_directory):
+    def install(self, download_directory, install_directory, arguments):
         """
         you can override this method to take introduce any special installation
         steps that are necessary to install the ubrew application to the 
@@ -100,7 +100,7 @@ class PreBuiltBinaryRecipe(AppRecipe):
     installed
     """
 
-    def install(self, download_directory, install_directory):
+    def install(self, download_directory, install_directory, arguments):
         # prebuilt and we can just copy it over
         shutil.move(download_directory, install_directory)
 
@@ -112,7 +112,7 @@ class AutoconfRecipe(AppRecipe):
     'make install' to get everything built and installed correctly.
     """
 
-    def install(self, download_directory, install_directory):
+    def install(self, download_directory, install_directory, arguments):
         # lets configure and install to the desired location
         os.chdir(download_directory)
 

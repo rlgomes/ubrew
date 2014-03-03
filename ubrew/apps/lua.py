@@ -66,7 +66,7 @@ class LuaRecipe(AutoconfRecipe):
 
         return versions
 
-    def install(self, download_directory, install_directory):
+    def install(self, download_directory, install_directory, arguments):
         os.chdir(download_directory)
         
         version = 0.0

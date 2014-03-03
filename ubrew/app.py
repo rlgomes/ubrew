@@ -11,6 +11,7 @@ from ubrew import log
 
 class AppRecipe(object):
 
+
     def arguments(self):
         """
         return a list of keyword arguments that the command line tool can expose
@@ -187,7 +188,7 @@ class SetuptoolsRecipe(AppRecipe):
                }
 
 
-    def install(self, download_directory, install_directory):
+    def install(self, download_directory, install_directory, arguments):
 
         os.chdir(download_directory) 
         self.run('build',['python', 'setup.py', 'build'])

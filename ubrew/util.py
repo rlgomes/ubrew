@@ -42,7 +42,7 @@ def retrieve(fromurl, cache_directory, outdirectory):
             if bytes_so_far >= total_size:
                 sys.stdout.write('\n')
 
-        def chunk_read(response, output, chunk_size=1024*8, report_hook=None):
+        def chunk_read(response, output, chunk_size=1024*16, report_hook=None):
             total_size = response.getheader('Content-Length').strip()
             total_size = int(total_size)
             bytes_so_far = 0
@@ -84,10 +84,14 @@ def retrieve(fromurl, cache_directory, outdirectory):
 
         files = os.listdir(outdirectory)
         if len(files) == 1:
+            # uncompressed to output directory but ended up with another directory 
+            # inside of this one, so lets move that back one level
             basepath = '%s/%s' % (outdirectory, files[0])
-            subfiles = os.listdir(basepath)
+            tmppath = basepath + '_tmp'
+            shutil.move(basepath, tmppath)
+            subfiles = os.listdir(tmppath)
             for path in subfiles:
-                shutil.move('%s/%s' % (basepath, path), outdirectory)
+                shutil.move('%s/%s' % (tmppath, path), outdirectory)
             
     elif url.scheme == 'file':
         # just retrieve it from the specified file location

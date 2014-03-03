@@ -31,7 +31,7 @@ Linux:
 
  * RedHat:  sudo yum install curl git-core 
 
- * Gentoo:  
+ * Gentoo:  sudo emerge curl ; sudo emerge git-core 
 
 Also make sure you have the latest gcc installed on either system (I'll provide
 more information on how to get those done for Debian & Redhat systems later).

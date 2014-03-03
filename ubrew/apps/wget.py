@@ -48,7 +48,7 @@ class WGetRecipe(AutoconfRecipe):
 
         return versions
     
-    def install(self, download_directory, install_directory):
+    def install(self, download_directory, install_directory, arguments):
         # lets configure and install to the desired location
         os.chdir(download_directory)
 

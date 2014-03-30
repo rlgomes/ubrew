@@ -51,20 +51,18 @@ class PythonRecipe(AutoconfRecipe):
         # keep the order that is presented of the versions by mozilla
         versions = {}
         
-        for tr in soup.find_all('tr'):
-            tds = tr.find_all('td')
-            if tds:
-                try:
-                    version = tds[1].a.get_text()[0:-1]
-                    
-                    if re.match('[0-9]+.*', version):
-                        ext = self._get_platform_extension()
-                        url = '%s/%s/Python-%s%s' % \
-                              (PythonRecipe.__FTP_LOCATION, version, version, ext)
+        for a in soup.find_all('a'):
+            try:
+                version = a.get_text()[0:-1]
+                
+                if re.match('[0-9]+.*', version):
+                    ext = self._get_platform_extension()
+                    url = '%s/%s/Python-%s%s' % \
+                            (PythonRecipe.__FTP_LOCATION, version, version, ext)
 
-                        versions[version] = { 'url': url }
-                except:
-                    pass
+                    versions[version] = { 'url': url }
+            except:
+                pass
 
         return versions
     
